@@ -48,10 +48,12 @@ response = session.get(
     params={'csrf':cookies_dict['bili_jct']}
     )
 data = response.json()['data']
-if not data['refresh']:
-    print("无需刷新")
-    os.system('pause')
-    quit()
+if data['refresh']:
+    print("当前Cookies已过期")
+else:
+    ans = input("当前Cookies在有效期内，是否继续刷新？(Y/N): ")
+    if ans.lower() != 'y':
+        quit()
 
 # 获取refresh_csrf
 print("正在获取刷新凭证")
