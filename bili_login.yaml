@@ -1,4 +1,4 @@
-name: bili_toolkit
+name: bili_login
 channels:
   - defaults
 dependencies:
