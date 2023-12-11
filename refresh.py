@@ -51,7 +51,7 @@ data = response.json()['data']
 if not data['refresh']:
     print("无需刷新")
     os.system('pause')
-    #quit()
+    quit()
 
 # 获取refresh_csrf
 print("正在获取刷新凭证")
@@ -78,8 +78,9 @@ response = session.post(
         'refresh_token': refresh_token
         }
     )
-data = response.json()['data']
-print("Code: {}, 信息: {}".format(data['code'], data['message']))
+js = response.json()
+data = js['data']
+print("Code: {}, 信息: {}".format(js['code'], js['message']))
 
 # 提取新的登录信息
 loginData = data
