@@ -1,5 +1,5 @@
 # bilibiliLogin
-扫码登录哔哩哔哩Web端并获取cookies（可用于录播）
+扫码登录哔哩哔哩Web端并获取cookies
 
 ## 安装
 ### 免安装（Windows Only）
