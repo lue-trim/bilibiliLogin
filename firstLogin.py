@@ -1,61 +1,61 @@
 import qrcode_terminal
-import os, time, requests, json, urllib, hashlib
+import os, time, requests, json
+import http.cookiejar, requests.utils
 
-def tvsign(params, appkey='4409e2ce8ffd12b8', appsec='59b43e04ad6965f34319062b478f83dd'):
-    '为请求参数进行 api 签名'
-    params.update({'appkey': appkey})
-    params = dict(sorted(params.items())) # 重排序参数 key
-    query = urllib.parse.urlencode(params) # 序列化参数
-    sign = hashlib.md5((query+appsec).encode()).hexdigest() # 计算 api 签名
-    params.update({'sign':sign})
-    return params
+def dict2str(data:dict):
+    s = ''
+    for i in data.keys():
+        s += "{}={};".format(i, data[i])
+    return s
 
-# 获取二维码
-loginInfo = requests.post('https://passport.bilibili.com/x/passport-tv-login/qrcode/auth_code',params=tvsign({
-    'local_id':'0',
-    'ts':int(time.time())
-})).json()
+# header和session
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0'
+    }
+session = requests.session()
+session.cookies = http.cookiejar.LWPCookieJar()
 
-# 生成二维码
-qrcode_terminal.draw(loginInfo['data']['url'])
+#session.cookies.load(filename='cookies.txt', ignore_discard=True, ignore_expires=True)
 
+# 扫码登录
 while True:
-    pollInfo = requests.post('https://passport.bilibili.com/x/passport-tv-login/qrcode/poll',params=tvsign({
-        'auth_code':loginInfo['data']['auth_code'],
-        'local_id':'0',
-        'ts':int(time.time())
-    })).json()
+    # 获取二维码及其密钥
+    print("正在获取登录二维码")
+    response = session.get('https://passport.bilibili.com/x/passport-login/web/qrcode/generate', headers=headers)
+    data = response.json()['data']
+    #print("Code: {}, 信息: {}".format(data['code'], data['message']))
+    qrcode_key = data['qrcode_key']
+
+    # 生成二维码
+    qrcode_terminal.draw(data['url'])
+    input("扫描后请回车确认")
+
+    # 查询扫码状态
+    response = session.get(
+        url='https://passport.bilibili.com/x/passport-login/web/qrcode/poll', 
+        params={'qrcode_key': qrcode_key},
+        headers=headers
+        )
+    data = response.json()['data']
     
-    if pollInfo['code'] == 0:
-        loginData = pollInfo['data']
+    if data['code'] == 0:
         break
-        
-    elif pollInfo['code'] == -3:
-        print('API校验密匙错误')
-        raise
-    
-    elif pollInfo['code'] == -400:
-        print('请求错误')
-        raise
-        
-    elif pollInfo['code'] == 86038:
-        print('二维码已失效')
-        raise
-        
-    elif pollInfo['code'] == 86039:
-        time.sleep(5)
-    
     else:
-        print('未知错误')
-        raise
+        print("Code: {}, 信息: {}".format(data['code'], data['message']))
+        time.sleep(5)
+        continue
 
-print(f"登录成功, 有效期至{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() + int(loginData['expires_in'])))}")
+# 保存登录信息
+with open("loginData.json", 'w', encoding='utf-8') as f:
+    json.dump(data, f)
 
-saveInfo = {
-    'update_time':int(time.time()+0.5),
-    'token_info':loginData['token_info'],
-    'cookie_info':loginData['cookie_info']
-}
-with open('info.json','w+') as f:
-    f.write(json.dumps(saveInfo,ensure_ascii=False,separators=(',',':')))
-    f.close()
+# 保存cookies
+session.cookies.save(filename='cookies.txt')
+print('登录成功')
+
+# 打印cookies
+cookies_dict = requests.utils.dict_from_cookiejar(session.cookies)
+print("Cookies:", dict2str(cookies_dict))
+os.system('pause')
+#print(f"登录成功, 有效期至{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() + int(loginData['expires_in'])))}")
+

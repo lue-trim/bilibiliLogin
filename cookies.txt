@@ -1,0 +1,6 @@
+#LWP-Cookies-2.0
+Set-Cookie3: SESSDATA="da19b03e%2C1717830970%2C6bfb7%2Ac2CjBfJz7vDng-2bjUen4lmJSyqFJ_Gw7P4yanLOlsJH09rhTJyoK3I68trRRAkDQErSYSVktTTWM0UmJfZF92bWtHay1aaVcxREJKT1hUWE9MZGNVT0J2M1VQMEJ6UjNBWTJEaFU3SEtmR0xvWHQ0ZDRLUUNHR2Exc2tlX2JxTTE4NGlMQ09HRGd3IIEC"; path="/"; domain=".bilibili.com"; path_spec; secure; expires="2024-06-08 07:16:10Z"; HttpOnly=None; version=0
+Set-Cookie3: bili_jct=8dbf76f728879564dcfcb4e2b1823b9c; path="/"; domain=".bilibili.com"; path_spec; expires="2024-06-08 07:16:10Z"; version=0
+Set-Cookie3: DedeUserID=18200440; path="/"; domain=".bilibili.com"; path_spec; expires="2024-06-08 07:16:10Z"; version=0
+Set-Cookie3: DedeUserID__ckMd5=93dd408ed4c794a7; path="/"; domain=".bilibili.com"; path_spec; expires="2024-06-08 07:16:10Z"; version=0
+Set-Cookie3: sid=nwi3j6qw; path="/"; domain=".bilibili.com"; path_spec; expires="2024-06-08 07:16:10Z"; version=0
