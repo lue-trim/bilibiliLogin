@@ -48,6 +48,9 @@ response = session.get(
     params={'csrf':cookies_dict['bili_jct']}
     )
 data = response.json()['data']
+if data is None:
+    print("当前cookies已完全失效，请重新获取")
+    quit()
 if data['refresh']:
     print("当前Cookies已过期")
 else:
